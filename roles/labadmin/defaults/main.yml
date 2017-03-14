@@ -1,0 +1,16 @@
+---
+labadmin_mysql_user: labadmin
+labadmin_mysql_database: labadmin
+
+labadmin_service_user: labadmin
+labadmin_service_group: labadmin
+labadmin_home: /var/www/labadmin
+labadmin_python_package: https://github.com/OfficineArduinoTorino/LabAdmin/archive/master.zip
+
+labadmin_django_admin_user: labadmin
+labadmin_django_admin_email: admin@example.com
+
+labadmin_django_language: it-it
+labadmin_django_timezone: Europe/Rome
+
+labadmin_mqtt_entrance: False

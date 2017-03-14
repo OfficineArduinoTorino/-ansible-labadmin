@@ -1,0 +1,205 @@
+---
+  - name: Ensure APT cache has been updated
+    apt:
+      update_cache: yes
+
+  - name: Ensure the LabAdmin service group is present
+    group:
+      name: "{{ labadmin_service_user }}"
+      state: present
+      system: true
+
+  - name: Ensure labadmin_home parent dir exists
+    file:
+      path: "{{ labadmin_home | dirname }}"
+      state: directory
+
+  - name: Ensure the LabAdmin service user is present
+    user:
+      name: "{{ labadmin_service_user }}"
+      group: "{{ labadmin_service_group }}"
+      home: "{{ labadmin_home }}"
+      createhome: true
+      shell: /bin/false
+      state: present
+      system: true
+
+  - name: check if mysql is already up and running
+    command: dpkg -s mysql-server
+    register: mysql_present
+    ignore_errors: yes
+
+  - name: set debconf mysql root password
+    shell: debconf-set-selections <<< 'mysql-server mysql-server/root_password password {{ labadmin_mysql_root_password }}'
+    args:
+      executable: /bin/bash
+    when: mysql_present.rc == 1
+
+  - name: set debconf mysql root password again
+    shell: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password {{ labadmin_mysql_root_password }}'
+    args:
+      executable: /bin/bash
+    when: mysql_present.rc == 1
+
+  - name: Ensure the LabAdmin dependencies are installed
+    package:
+      name: "{{ labadmin_deps }}"
+      state: present
+
+  - name: create mysql db for labadmin
+    mysql_db:
+       name: "{{ labadmin_mysql_database }}"
+       state: present
+       login_user: root
+       login_password: "{{ labadmin_mysql_root_password }}"
+
+  - name: create mysql user for labadmin
+    mysql_user:
+       name: "{{ labadmin_mysql_user }}"
+       password: "{{ labadmin_mysql_password }}"
+       priv: "{{ labadmin_mysql_database }}.*:ALL"
+       state: present
+       login_user: root
+       login_password: "{{ labadmin_mysql_root_password }}"
+
+  - name: Create LabAdmin virtualenv
+    command: python3 -m venv {{ labadmin_home }}/venv
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: create LabAdmin launcher script dir
+    file:
+      path: "{{ labadmin_home }}/bin"
+      state: directory
+
+  - name: copy LabAdmin launcher 
+    template:
+      src: labadmin
+      dest: "{{ labadmin_home }}/bin/labadmin"
+      owner: "{{ labadmin_service_user }}"
+      group: "{{ labadmin_service_group }}"
+      mode: '0755'
+
+  - name: Copy labAdmin requirements
+    copy:
+      src: requirements.txt
+      dest: "{{ labadmin_home }}/requirements.txt"
+
+  - name: Install LabAdmin requirements
+    pip:
+      requirements: "{{ labadmin_home }}/requirements.txt"
+      virtualenv: "{{ labadmin_home }}/venv"
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: Install latest LabAdmin
+    pip:
+      name: "{{ labadmin_python_package }}"
+      virtualenv: "{{ labadmin_home }}/venv"
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: bootstrap LabAdmin django project
+    command: "./venv/bin/python ./venv/bin/django-admin.py startproject labadmin"
+    args:
+      chdir: "{{ labadmin_home }}"
+      creates: "{{ labadmin_home }}/labadmin"
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: django media directory is available
+    file:
+      path: "{{ labadmin_home }}/labadmin/uploads"
+      state: directory
+      owner: "{{ labadmin_service_user }}"
+      group: "{{ labadmin_service_group }}"
+      mode: '0755'
+
+  - name: django static directory is available
+    file:
+      path: "{{ labadmin_home }}/labadmin/static"
+      state: directory
+      owner: "{{ labadmin_service_user }}"
+      group: "{{ labadmin_service_group }}"
+      mode: '0755'
+
+  - name: upload labadmin settings
+    template:
+      src: django/settings.py
+      dest:  "{{ labadmin_home }}/labadmin/labadmin/settings.py"
+      mode: '0644'
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: upload labadmin urls
+    template:
+      src: django/urls.py
+      dest:  "{{ labadmin_home }}/labadmin/labadmin/urls.py"
+      mode: '0644'
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: labadmin collectstatic
+    django_manage:
+      command: collectstatic
+      app_path: "{{ labadmin_home}}/labadmin"
+      virtualenv: "{{ labadmin_home }}/venv"
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: labadmin migrate
+    django_manage:
+       command: migrate
+       app_path: "{{ labadmin_home}}/labadmin"
+       virtualenv: "{{ labadmin_home }}/venv"
+    become: yes
+    become_user: "{{ labadmin_service_user }}"
+
+  - name: does super user exist?
+    shell: echo 'from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(username="""{{ labadmin_django_admin_user }}""").exists());' | {{ labadmin_home }}/venv/bin/python ./manage.py shell
+    args:
+      chdir: "{{ labadmin_home }}/labadmin"
+    register: superuser_exists
+
+  - name: create labadmin django admin user
+    django_manage:
+       command: "createsuperuser --noinput --username={{ labadmin_django_admin_user }} --email={{ labadmin_django_admin_email }}"
+       app_path: "{{ labadmin_home}}/labadmin"
+       virtualenv: "{{ labadmin_home }}/venv"
+    when: superuser_exists.stdout.find('False') != -1
+
+  - name: Change labadmin admin password
+    expect:
+      command: "{{ labadmin_home }}/venv/bin/python manage.py changepassword {{ labadmin_django_admin_user }}"
+      responses:
+        Password: "{{ labadmin_django_admin_password }}"
+      chdir: "{{ labadmin_home }}/labadmin"
+    when: superuser_exists.stdout.find('False') != -1
+
+  - name: upload systemd unit file   
+    template:
+      src: labadmin.service
+      dest: /etc/systemd/system/labadmin.service
+
+  - name: ensure labadmin service is running
+    service:
+       name: labadmin
+       state: started
+       enabled: true
+
+  - name: upload nginx labadmin conf  
+    template:
+      src: labadmin.nginx.conf
+      dest: /etc/nginx/conf.d/labadmin.conf
+
+  - name: disable default nginx virtualhost config
+    command: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/.default
+    args:
+      creates: /etc/nginx/sites-available/.default
+      removes: /etc/nginx/sites-available/default
+
+  - name: reload nginx
+    service:
+      name: nginx
+      state: reloaded
+      enabled: true

@@ -1,0 +1,15 @@
+---
+- name: LabAdmin
+  hosts: default
+  remote_user: vagrant
+  become: true
+  become_method: sudo
+  roles:
+    - labadmin
+  vars:
+    labadmin_mysql_password: labadminpassword
+    labadmin_mysql_root_password: labadminrootpassword
+    labadmin_django_secret_key: labadmin
+    labadmin_django_admin_user: labadmin
+    labadmin_django_admin_password: labadminpassword
+    labadmin_django_admin_email: myemail@mydomain.com
