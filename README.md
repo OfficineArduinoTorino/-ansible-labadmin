@@ -55,10 +55,10 @@ Finally we can run ansible with the following command:
 ansible-playbook -i <ip of your host>, playbook.yml
 ```
 
-If you authenticate with password you have to pass an additional *--ask-pass* option.
-If you need a password to became use you have to pass an additional *--ask-sudo-pass* option.
+If you authenticate ssh with password you have to pass an additional *--ask-pass* option.
+If you need a password to use sudo you have to pass an additional *--ask-sudo-pass* option.
 
-## Available configurations variables
+## Available configuration variables
 
 
 | Name | Description |
