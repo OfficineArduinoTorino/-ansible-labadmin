@@ -24,11 +24,17 @@ copy that to a file named *playbook.yml*.
 
 Open the file *playbook.yml* and edit the following options:
 
+
+| Name | Description |
+|----- | ------------|
 | hosts | the ip of the host you want to provision |
 | remote_user | the user we'll use to provision the host |
 
 Then there's the following variables to update, remember to don't reuse the same password:
 
+
+| Name | Description |
+|----- | ------------|
 | labadmin_mysql_password | password for the labadmin mysql user |
 | labadmin_mysql_root_password | password for the mysql root user |
 | labadmin_django_secret_key | random secret string for django, see below on how to generate one |
@@ -54,22 +60,21 @@ If you need a password to became use you have to pass an additional *--ask-sudo-
 
 ## Available configurations variables
 
+
+| Name | Description |
+|----- | ------------|
 | labadmin_mysql_user | mysql user for labadmin |
 | labadmin_mysql_database | mysql database name for labadmin |
 | labadmin_mysql_password | password for the labadmin mysql user |
 | labadmin_mysql_root_password | password for the mysql root user |
-
 | labadmin_service_user | system user for running labadmin, default: labadmin |
 | labadmin_service_group | system group for runing labadmin, default: labadmin |
 | labadmin_home | path for labadmin installation, default: /var/www/labadmin |
 | labadmin_python_package | labadmin version as understood by pip, default: https://github.com/OfficineArduinoTorino/LabAdmin/archive/master.zip |
-
 | labadmin_django_secret_key | random secret string for django, see tools/generatesecret.py |
 | labadmin_django_admin_user | admin user for labadmin |
 | labadmin_django_admin_password | admin user password |
 | labadmin_django_admin_email | admin user email |
-
 | labadmin_django_language| django installation language, default: it-it |
 | labadmin_django_timezone| django installation timezone, default: Europe/Rome |
-
 | labadmin_mqtt_entrance | labadmin mqtt notification, default: False |
