@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
@@ -132,5 +133,10 @@ STATIC_ROOT = '{{ labadmin_home }}/labadmin/static/'
 STATIC_URL = '/labadmin/static/'
 
 LOGIN_URL = '/labadmin/accounts/login/'
+LOGIN_REDIRECT_URL = 'labadmin-user-profile'
+
+ACCOUNT_ACTIVATION_DAYS = 2
+
+SITE_ID = 1
 
 LABADMIN_NOTIFY_MQTT_ENTRANCE = {{ labadmin_mqtt_entrance }}
