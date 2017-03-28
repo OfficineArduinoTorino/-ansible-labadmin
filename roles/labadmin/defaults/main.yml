@@ -2,6 +2,9 @@
 labadmin_mysql_user: labadmin
 labadmin_mysql_database: labadmin
 
+labadmin_postfix_relay_host: smtp.localdomain
+labadmin_postfix_relay_port: 587
+
 labadmin_service_user: labadmin
 labadmin_service_group: labadmin
 labadmin_home: /var/www/labadmin

@@ -9,6 +9,8 @@
   vars:
     labadmin_mysql_password: labadminpassword
     labadmin_mysql_root_password: labadminrootpassword
+    labadmin_postfix_relay_username: username
+    labadmin_postfix_relay_password: password
     labadmin_django_secret_key: labadmin
     labadmin_django_admin_user: labadmin
     labadmin_django_admin_password: labadminpassword

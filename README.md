@@ -41,6 +41,10 @@ Then there's the following variables to update, remember to don't reuse the same
 | labadmin_django_admin_user | admin user for labadmin |
 | labadmin_django_admin_password | admin user password |
 | labadmin_django_admin_email | admin user email |
+| labadmin_postfix_relay_host | smtp host to use as relay |
+| labadmin_postfix_relay_port | smtp port to connect to relay host, default: 587 |
+| labadmin_postfix_relay_username | smtp username to connect to relay host |
+| labadmin_postfix_relay_password | smtp password  to connect to relay host |
 
 You can generate a secret using:
 
@@ -67,6 +71,10 @@ If you need a password to use sudo you have to pass an additional *--ask-sudo-pa
 | labadmin_mysql_database | mysql database name for labadmin |
 | labadmin_mysql_password | password for the labadmin mysql user |
 | labadmin_mysql_root_password | password for the mysql root user |
+| labadmin_postfix_relay_host | smtp host to use as relay, default: smtp.localdomain |
+| labadmin_postfix_relay_port | smtp port to connect to relay host, default: 587 |
+| labadmin_postfix_relay_username | smtp username to connect to relay host |
+| labadmin_postfix_relay_password | smtp password  to connect to relay host |
 | labadmin_service_user | system user for running labadmin, default: labadmin |
 | labadmin_service_group | system group for runing labadmin, default: labadmin |
 | labadmin_home | path for labadmin installation, default: /var/www/labadmin |

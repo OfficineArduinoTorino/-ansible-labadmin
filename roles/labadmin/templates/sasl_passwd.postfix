@@ -1,0 +1,1 @@
+[{{ labadmin_postfix_relay_host }}]:{{ labadmin_postfix_relay_port }} {{ labadmin_postfix_relay_username }}:{{ labadmin_postfix_relay_password }}

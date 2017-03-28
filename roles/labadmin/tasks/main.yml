@@ -41,10 +41,70 @@
       executable: /bin/bash
     when: mysql_present.rc == 1
 
+  - name: check if postfix is already up and running
+    command: dpkg -s postfix
+    register: postfix_present
+    ignore_errors: yes
+
+  - name: get machine fqdn
+    command: hostname -f
+    register: fqdn
+    when: postfix_present.rc == 1
+
+  - name: set postfix mailer type
+    shell: debconf-set-selections <<< 'postfix postfix/main_mailer_type string "Satellite System"'
+    args:
+      executable: /bin/bash
+    when: postfix_present.rc == 1
+
+  - name: set postfix mailname
+    shell: debconf-set-selections <<< 'postfix postfix/mailname string {{ fqdn }}'
+    args:
+      executable: /bin/bash
+    when: postfix_present.rc == 1
+
+  - name: set postfix relayhost
+    shell: debconf-set-selections <<< 'postfix postfix/relayhost string [{{ labadmin_postfix_relay_host }}]:{{ labadmin_postfix_relay_port }}'
+    args:
+      executable: /bin/bash
+    when: postfix_present.rc == 1
+
   - name: Ensure the LabAdmin dependencies are installed
     package:
       name: "{{ labadmin_deps }}"
       state: present
+
+  - name: configure sasl username/password
+    template:
+      src: sasl_passwd.postfix
+      dest: /etc/postfix/sasl_passwd
+      owner: root
+      group: postfix
+      mode: 0640
+    when: postfix_present.rc == 1
+
+  - name: rebuild sasl
+    command: postmap sasl_passwd
+    args:
+      chdir: /etc/postfix
+    when: postfix_present.rc == 1
+
+  - name: configure sasl authentication
+    blockinfile:
+      dest: /etc/postfix/main.cf
+      block: |
+        smtp_sasl_auth_enable = yes
+        smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+        smtp_sasl_security_options = noanonymous
+        smtp_sasl_tls_security_options = noanonymous
+    when: postfix_present.rc == 1
+
+  - name: restart postfix
+    service:
+      name: postfix
+      state: restarted
+      enabled: true
+    when: postfix_present.rc == 1
 
   - name: create mysql db for labadmin
     mysql_db:
