@@ -41,6 +41,7 @@ Then there's the following variables to update, remember to don't reuse the same
 | labadmin_django_admin_user | admin user for labadmin |
 | labadmin_django_admin_password | admin user password |
 | labadmin_django_admin_email | admin user email |
+| labadmin_django_from_email | default email to as from when sending email |
 | labadmin_postfix_relay_host | smtp host to use as relay |
 | labadmin_postfix_relay_port | smtp port to connect to relay host, default: 587 |
 | labadmin_postfix_relay_username | smtp username to connect to relay host |
@@ -85,4 +86,5 @@ If you need a password to use sudo you have to pass an additional *--ask-sudo-pa
 | labadmin_django_admin_email | admin user email |
 | labadmin_django_language| django installation language, default: it-it |
 | labadmin_django_timezone| django installation timezone, default: Europe/Rome |
+| labadmin_django_from_email | default email to as from when sending email |
 | labadmin_mqtt_entrance | labadmin mqtt notification, default: False |

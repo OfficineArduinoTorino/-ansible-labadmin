@@ -139,4 +139,6 @@ ACCOUNT_ACTIVATION_DAYS = 2
 
 SITE_ID = 1
 
+DEFAULT_FROM_EMAIL = '{{ labadmin_django_from_email }}'
+
 LABADMIN_NOTIFY_MQTT_ENTRANCE = {{ labadmin_mqtt_entrance }}

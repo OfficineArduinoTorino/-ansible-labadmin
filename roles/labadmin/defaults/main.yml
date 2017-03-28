@@ -16,4 +16,6 @@ labadmin_django_admin_email: admin@example.com
 labadmin_django_language: it-it
 labadmin_django_timezone: Europe/Rome
 
+labadmin_django_from_email: 'labadmin@localhost'
+
 labadmin_mqtt_entrance: False

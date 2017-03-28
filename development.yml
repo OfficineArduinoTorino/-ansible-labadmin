@@ -15,3 +15,4 @@
     labadmin_django_admin_user: labadmin
     labadmin_django_admin_password: labadminpassword
     labadmin_django_admin_email: myemail@mydomain.com
+    labadmin_django_from_email: myemail@mydomain.com
