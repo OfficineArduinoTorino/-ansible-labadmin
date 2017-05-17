@@ -17,6 +17,9 @@ The following software must be installed on the machine you are provisioning:
 
 On the provisioned machine there should be an unprivileged user than can use *sudo*.
 
+It's better to connect to the machine with SSH Public Key Authentication instead of authenticating
+with a password.
+
 ## Setup
 
 First of all we need to create a playbook, we'll use the shipped *development.yml* as a base so let's
