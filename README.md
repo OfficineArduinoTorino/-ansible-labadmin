@@ -12,13 +12,14 @@ The following software must be installed on your machine:
 
 The following packages must be installed on the machine you are provisioning:
 
+- acl
 - python
 - openssh-server
 
 You can install them with:
 
 ```
-sudo apt install python openssh-server
+sudo apt install acl python openssh-server
 ```
 
 On the provisioned machine there should be an unprivileged user than can use *sudo*.
