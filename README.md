@@ -10,10 +10,16 @@ The following software must be installed on your machine:
 - ansible (>= 2.0)
 - sshpass
 
-The following software must be installed on the machine you are provisioning:
+The following packages must be installed on the machine you are provisioning:
 
 - python
 - openssh-server
+
+You can install them with:
+
+```
+sudo apt install python openssh-server
+```
 
 On the provisioned machine there should be an unprivileged user than can use *sudo*.
 
