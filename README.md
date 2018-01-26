@@ -89,7 +89,7 @@ If you need a password to use sudo you have to pass an additional *--ask-sudo-pa
 | labadmin_service_user | system user for running labadmin, default: labadmin |
 | labadmin_service_group | system group for runing labadmin, default: labadmin |
 | labadmin_home | path for labadmin installation, default: /var/www/labadmin |
-| labadmin_python_package | labadmin version as understood by pip, default: https://github.com/OfficineArduinoTorino/LabAdmin/archive/v0.4.2.zip |
+| labadmin_python_package | labadmin version as understood by pip, default: https://github.com/OfficineArduinoTorino/LabAdmin/archive/v0.4.3.zip |
 | labadmin_django_secret_key | random secret string for django, see tools/generatesecret.py |
 | labadmin_django_admin_user | admin user for labadmin |
 | labadmin_django_admin_password | admin user password |

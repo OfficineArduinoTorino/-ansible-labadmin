@@ -8,7 +8,7 @@ labadmin_postfix_relay_port: 587
 labadmin_service_user: labadmin
 labadmin_service_group: labadmin
 labadmin_home: /var/www/labadmin
-labadmin_python_package: https://github.com/OfficineArduinoTorino/LabAdmin/archive/v0.4.2.zip
+labadmin_python_package: https://github.com/OfficineArduinoTorino/LabAdmin/archive/v0.4.3.zip
 
 labadmin_django_admin_user: labadmin
 labadmin_django_admin_email: admin@example.com
